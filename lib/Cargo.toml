@@ -1,0 +1,10 @@
+[package]
+name = "radix50"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "radix50.rs"
+
+[dependencies]
+const_for = "0.1"

@@ -1,4 +1,7 @@
+// PDP-10/PDP-11/VAX RADIX-50 encoding/decoding cli
+//
 // Copyright © 2023 David Caldwell <david@porkrind.org>
+// License: MIT (see LICENSE.md file)
 
 #![feature(iter_intersperse)]
 #![feature(array_chunks)]

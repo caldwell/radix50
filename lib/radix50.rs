@@ -1,9 +1,60 @@
+// PDP-10/PDP-11/VAX RADIX-50 encoding/decoding functions
+//
+// Copyright © 2023 David Caldwell <david@porkrind.org>
+// License: MIT (see LICENSE.md file)
+
+#![doc = include_str!("../README.md")]
 
 use const_for::const_for;
 
 // https://en.wikipedia.org/wiki/DEC_RADIX_50
 
 pub mod pdp10 {
+    use super::Error;
+    /// The RADIX-50 character set used on the PDP-10, PDP-6, DECsystem-10, and DECSYSTEM-20.
+    ///
+    /// |Char |Dec| Hex| Oct|Binary|
+    /// |-----|---|----|----|------|
+    /// |space|  0|0x00|0o00|000000|
+    /// |0    |  1|0x01|0o01|000001|
+    /// |1    |  2|0x02|0o02|000010|
+    /// |2    |  3|0x03|0o03|000011|
+    /// |3    |  4|0x04|0o04|000100|
+    /// |4    |  5|0x05|0o05|000101|
+    /// |5    |  6|0x06|0o06|000110|
+    /// |6    |  7|0x07|0o07|000111|
+    /// |7    |  8|0x08|0o10|001000|
+    /// |8    |  9|0x09|0o11|001001|
+    /// |9    | 10|0x0a|0o12|001010|
+    /// |A    | 11|0x0b|0o13|001011|
+    /// |B    | 12|0x0c|0o14|001100|
+    /// |C    | 13|0x0d|0o15|001101|
+    /// |D    | 14|0x0e|0o16|001110|
+    /// |E    | 15|0x0f|0o17|001111|
+    /// |F    | 16|0x10|0o20|010000|
+    /// |G    | 17|0x11|0o21|010001|
+    /// |H    | 18|0x12|0o22|010010|
+    /// |I    | 19|0x13|0o23|010011|
+    /// |J    | 20|0x14|0o24|010100|
+    /// |K    | 21|0x15|0o25|010101|
+    /// |L    | 22|0x16|0o26|010110|
+    /// |M    | 23|0x17|0o27|010111|
+    /// |N    | 24|0x18|0o30|011000|
+    /// |O    | 25|0x19|0o31|011001|
+    /// |P    | 26|0x1a|0o32|011010|
+    /// |Q    | 27|0x1b|0o33|011011|
+    /// |R    | 28|0x1c|0o34|011100|
+    /// |S    | 29|0x1d|0o35|011101|
+    /// |T    | 30|0x1e|0o36|011110|
+    /// |U    | 31|0x1f|0o37|011111|
+    /// |V    | 32|0x20|0o40|100000|
+    /// |W    | 33|0x21|0o41|100001|
+    /// |X    | 34|0x22|0o42|100010|
+    /// |Y    | 35|0x23|0o43|100011|
+    /// |Z    | 36|0x24|0o44|100100|
+    /// |.    | 37|0x25|0o45|100101|
+    /// |$    | 38|0x26|0o46|100110|
+    /// |%    | 39|0x27|0o47|100111|
     pub const RADIX50_DECODE: [char; 40] = [' ', '0', '1', '2', '3', '4', '5', '6',
                                             '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
                                             'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -12,13 +63,79 @@ pub mod pdp10 {
 
     const RADIX50_ENCODE: [Option<u8>; 128] = super::invert(&RADIX50_DECODE);
 
-    pub fn encode(s: &str) -> Result<Vec<u16>, super::Error> { super::encode(&RADIX50_ENCODE, s) }
-    pub fn encode_word(s: &str) -> Result<u16, super::Error> { super::encode_word(&RADIX50_ENCODE, s) }
+    /// Encode a string into PDP-10 RADIX-50 format.
+    ///
+    /// The output is a [`std::vec::Vec`] of 16-bit words.
+    ///
+    /// It will return an error if any of the input characters are not part of the [valid RADIX-50 character
+    /// set][`RADIX50_DECODE`].
+    pub fn encode(s: &str) -> Result<Vec<u16>, Error> { super::encode(&RADIX50_ENCODE, s) }
+
+    /// Encode 3 characters into a PDP-10 RADIX-50 formatted word.
+    ///
+    /// The output is a single 16-bit word.
+    ///
+    /// It will return an error if any of the input characters are not part of the [valid RADIX-50 character
+    /// set][`RADIX50_DECODE`].
+    pub fn encode_word(s: &str) -> Result<u16, Error> { super::encode_word(&RADIX50_ENCODE, s) }
+
+    /// Decode a [`Vec`] of PDP-10 RADIX-50 encoded words into a string.
+    ///
+    /// The output is a String.
     pub fn decode(words: &[u16]) -> String { super::decode(&RADIX50_DECODE, words) }
+
+    /// Decode a PDP-10 RADIX-50 encoded word into a 3 character string.
+    ///
+    /// The output is a String.
     pub fn decode_word(word: u16) -> String { super::decode_word(&RADIX50_DECODE, word) }
 }
 
 pub mod pdp11 {
+    use super::Error;
+    /// The RADIX-50 character set used on the PDP-11 and VAX.
+    ///
+    /// |Char |Dec| Hex| Oct|Binary|
+    /// |-----|---|----|----|------|
+    /// |space|  0|0x00|0o00|000000|
+    /// |A    |  1|0x01|0o01|000001|
+    /// |B    |  2|0x02|0o02|000010|
+    /// |C    |  3|0x03|0o03|000011|
+    /// |D    |  4|0x04|0o04|000100|
+    /// |E    |  5|0x05|0o05|000101|
+    /// |F    |  6|0x06|0o06|000110|
+    /// |G    |  7|0x07|0o07|000111|
+    /// |H    |  8|0x08|0o10|001000|
+    /// |I    |  9|0x09|0o11|001001|
+    /// |J    | 10|0x0a|0o12|001010|
+    /// |K    | 11|0x0b|0o13|001011|
+    /// |L    | 12|0x0c|0o14|001100|
+    /// |M    | 13|0x0d|0o15|001101|
+    /// |N    | 14|0x0e|0o16|001110|
+    /// |O    | 15|0x0f|0o17|001111|
+    /// |P    | 16|0x10|0o20|010000|
+    /// |Q    | 17|0x11|0o21|010001|
+    /// |R    | 18|0x12|0o22|010010|
+    /// |S    | 19|0x13|0o23|010011|
+    /// |T    | 20|0x14|0o24|010100|
+    /// |U    | 21|0x15|0o25|010101|
+    /// |V    | 22|0x16|0o26|010110|
+    /// |W    | 23|0x17|0o27|010111|
+    /// |X    | 24|0x18|0o30|011000|
+    /// |Y    | 25|0x19|0o31|011001|
+    /// |Z    | 26|0x1a|0o32|011010|
+    /// |$    | 27|0x1b|0o33|011011|
+    /// |.    | 28|0x1c|0o34|011100|
+    /// |%    | 29|0x1d|0o35|011101|
+    /// |0    | 30|0x1e|0o36|011110|
+    /// |1    | 31|0x1f|0o37|011111|
+    /// |2    | 32|0x20|0o40|100000|
+    /// |3    | 33|0x21|0o41|100001|
+    /// |4    | 34|0x22|0o42|100010|
+    /// |5    | 35|0x23|0o43|100011|
+    /// |6    | 36|0x24|0o44|100100|
+    /// |7    | 37|0x25|0o45|100101|
+    /// |8    | 38|0x26|0o46|100110|
+    /// |9    | 39|0x27|0o47|100111|
     pub const RADIX50_DECODE: [char; 40] = [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
                                             'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
                                             'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
@@ -27,9 +144,22 @@ pub mod pdp11 {
 
     const RADIX50_ENCODE: [Option<u8>; 128] = super::invert(&RADIX50_DECODE);
 
-    pub fn encode(s: &str) -> Result<Vec<u16>, super::Error> { super::encode(&RADIX50_ENCODE, s) }
-    pub fn encode_word(s: &str) -> Result<u16, super::Error> { super::encode_word(&RADIX50_ENCODE, s) }
+    /// Encode a string into a PDP-11 RADIX-50 formatted [`Vec`] of 16-bit words.
+    ///
+    /// It will return an error if any of the input characters are not part of the [valid RADIX-50 character
+    /// set][`RADIX50_DECODE`].
+    pub fn encode(s: &str) -> Result<Vec<u16>, Error> { super::encode(&RADIX50_ENCODE, s) }
+
+    /// Encode a 3 character string into a PDP-11 RADIX-50 formatted 16-bit word.
+    ///
+    /// It will return [an error][`Error::IllegalChar`] if any of the input characters are not part of the
+    /// [valid RADIX-50 character set][`RADIX50_DECODE`].
+    pub fn encode_word(s: &str) -> Result<u16, Error> { super::encode_word(&RADIX50_ENCODE, s) }
+
+    /// Decode a [`Vec`] of PDP-11 RADIX-50 encoded words into a string.
     pub fn decode(words: &[u16]) -> String { super::decode(&RADIX50_DECODE, words) }
+
+    /// Decode a PDP-11 RADIX-50 encoded word into a 3 character string.
     pub fn decode_word(word: u16) -> String { super::decode_word(&RADIX50_DECODE, word) }
 }
 
@@ -83,9 +213,11 @@ fn decode_word(decode_table: &[char; 40], w: u16) -> String {
     }
 }
 
-
+/// RADIX-50 Encoding Errors
 #[derive(Debug,Clone,PartialEq)]
 pub enum Error {
+    /// The given character (at `pos` offset (1-based) in the original string) isn't part of the valid
+    /// RADIX-50 character set ([pdp-10][`pdp10::RADIX50_DECODE`]/[pdp-11][`pdp11::RADIX50_DECODE`])
     IllegalChar { char: char, pos: usize }
 }
 

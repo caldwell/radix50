@@ -5,3 +5,21 @@ members = [
     "lib",
     "cli",
 ]
+
+
+[patch.crates-io]
+radix50 = { path = "lib" }
+
+[workspace.dependencies]
+radix50 = "0.1.0"
+[workspace.package]
+version = "0.1.0"
+authors = ["David Caldwell <david@porkrind.org>"]
+homepage = "https://github.com/caldwell/radix50"
+repository = "https://github.com/caldwell/radix50.git"
+license = "MIT"
+license-file = "LICENSE.md"
+readme = "README.md"
+description = "Library and cli for encoding and decoding DEC PDP-11 and PDP-10 RADIX-50 word streams (https://en.wikipedia.org/wiki/DEC_RADIX_50)."
+keywords = ["radix50", "pdp", "pdp-11", "pdp-10"]
+categories = ["encoding"]

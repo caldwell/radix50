@@ -1,15 +1,23 @@
 [package]
 name = "radix50-cli"
-version = "0.1.0"
 edition = "2021"
+version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license.workspace = true
+readme.workspace = true
+description.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [[bin]]
-name = "radix50"
+name = "r50"
 path = "radix50-cli.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-radix50 = { path = "../lib" }
+radix50 = "0.1.0"
 docopt = "1"
 serde = "1"

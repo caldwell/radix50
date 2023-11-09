@@ -3,7 +3,7 @@
 // Copyright © 2023 David Caldwell <david@porkrind.org>
 // License: MIT (see LICENSE.md file)
 
-#![doc = include_str!("../README.md")]
+#![doc = include_str!(env!("CARGO_PKG_README"))]
 
 use const_for::const_for;
 

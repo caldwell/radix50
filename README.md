@@ -37,9 +37,18 @@ assert_eq!(pdp11_decoded, "THIS IS A TEST ");
 CLI
 ---
 
-The code repo contains a cli utility for encoding or decoding.
+The [code repo][repo] contains a cli utility for encoding or decoding (also
+published as the `radix50-cli` crate).
 
-### Building
+[repo]: https://github.com/caldwell/radix50
+
+### Installing from Cargo
+
+```shell-session
+cargo install radix50-cli
+```
+
+### Building From Source
 
 ```shell-session
 cargo build --release

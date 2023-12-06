@@ -107,7 +107,7 @@ $ printf "\x79\x18\x70\xbf" | radix50 decode
 SO RAW
 ```
 
-The default uses PDP-10/VAX encoding. Use the `--pdp10` flag to use the
+The default uses PDP-11/VAX encoding. Use the `--pdp10` flag to use the
 PDP-10 encoding (also used for PDP-6, DECsystem-10, DECSYSTEM-20).
 
 Display the RADIX-50 character set:

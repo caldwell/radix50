@@ -4,6 +4,7 @@
 // License: MIT (see LICENSE.md file)
 
 // To update README: `cargo rdme` (`cargo install rdme` if not installed)
+#![allow(rustdoc::redundant_explicit_links)]
 //! radix50
 //! =======
 //!
@@ -39,6 +40,19 @@
 //! assert_eq!(pdp10_decoded, "THIS IS A TEST ");
 //! assert_eq!(pdp11_decoded, "THIS IS A TEST ");
 //! ```
+//!
+//! Documentation Shortcuts
+//! -----------------------
+//! - PDP-10 [Encodings](crate::pdp10::RADIX50_DECODE)
+//!   - [`pdp10::encode`](crate::pdp10::encode)
+//!   - [`pdp10::encode_word`](crate::pdp10::encode_word)
+//!   - [`pdp10::decode`](crate::pdp10::decode)
+//!   - [`pdp10::decode_word`](crate::pdp10::decode_word)
+//! - PDP-11 [Encodings](crate::pdp11::RADIX50_DECODE)
+//!   - [`pdp11::encode`](crate::pdp11::encode)
+//!   - [`pdp11::encode_word`](crate::pdp11::encode_word)
+//!   - [`pdp11::decode`](crate::pdp11::decode)
+//!   - [`pdp11::decode_word`](crate::pdp11::decode_word)
 
 use const_for::const_for;
 

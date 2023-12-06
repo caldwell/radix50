@@ -36,6 +36,19 @@ assert_eq!(pdp10_decoded, "THIS IS A TEST ");
 assert_eq!(pdp11_decoded, "THIS IS A TEST ");
 ```
 
+Documentation Shortcuts
+-----------------------
+- PDP-10 [Encodings](https://docs.rs/radix50/latest/radix50/pdp10/const.RADIX50_DECODE.html)
+  - [`pdp10::encode`](https://docs.rs/radix50/latest/radix50/pdp10/fn.encode.html)
+  - [`pdp10::encode_word`](https://docs.rs/radix50/latest/radix50/pdp10/fn.encode_word.html)
+  - [`pdp10::decode`](https://docs.rs/radix50/latest/radix50/pdp10/fn.decode.html)
+  - [`pdp10::decode_word`](https://docs.rs/radix50/latest/radix50/pdp10/fn.decode_word.html)
+- PDP-11 [Encodings](https://docs.rs/radix50/latest/radix50/pdp11/const.RADIX50_DECODE.html)
+  - [`pdp11::encode`](https://docs.rs/radix50/latest/radix50/pdp11/fn.encode.html)
+  - [`pdp11::encode_word`](https://docs.rs/radix50/latest/radix50/pdp11/fn.encode_word.html)
+  - [`pdp11::decode`](https://docs.rs/radix50/latest/radix50/pdp11/fn.decode.html)
+  - [`pdp11::decode_word`](https://docs.rs/radix50/latest/radix50/pdp11/fn.decode_word.html)
+
 <!-- cargo-rdme end -->
 
 CLI

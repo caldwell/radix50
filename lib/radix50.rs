@@ -63,30 +63,75 @@ pub mod pdp10 {
 
     const RADIX50_ENCODE: [Option<u8>; 128] = super::invert(&RADIX50_DECODE);
 
-    /// Encode a string into PDP-10 RADIX-50 format.
+    /// Encode a string into [PDP-10 RADIX-50 format][`RADIX50_DECODE`].
+    ///
+    /// The input string will be space padded to a multiple of 3 characters before encoding. This is because
+    /// RADIX-50 encodes 3 charaters into a single 16 bit word.
     ///
     /// The output is a [`std::vec::Vec`] of 16-bit words.
     ///
-    /// It will return an error if any of the input characters are not part of the [valid RADIX-50 character
+    /// It will return an [Error] if any of the input characters are not part of the [valid RADIX-50 character
     /// set][`RADIX50_DECODE`].
+    ///
+    /// # Examples
+    /// ```
+    /// # use radix50::{Error,pdp10::encode};
+    /// let pdp10_encoded = encode("THIS IS A TEST").unwrap();
+    /// assert_eq!(pdp10_encoded, [48739, 46419, 46411, 1215, 47600]);
+    ///
+    /// let result = encode("This contains invalid characters");
+    /// assert_eq!(result, Err(Error::IllegalChar { char: 'h', pos: 2 }));
+    ///
+    /// assert_eq!(encode("PADDING12").unwrap(), encode("PADDING12").unwrap());
+    /// assert_eq!(encode("PADDING1").unwrap(),  encode("PADDING1 ").unwrap());
+    /// assert_eq!(encode("PADDING").unwrap(),   encode("PADDING  ").unwrap());
+    /// ```
     pub fn encode(s: &str) -> Result<Vec<u16>, Error> { super::encode(&RADIX50_ENCODE, s) }
 
-    /// Encode 3 characters into a PDP-10 RADIX-50 formatted word.
+    /// Encode 3 characters into a [PDP-10 RADIX-50 formatted][`RADIX50_DECODE`] word.
+    ///
+    /// If the string is shorter than 3 characters then the missing characters are assumed to be spaces.
     ///
     /// The output is a single 16-bit word.
     ///
-    /// It will return an error if any of the input characters are not part of the [valid RADIX-50 character
+    /// It will return an [Error] if any of the input characters are not part of the [valid RADIX-50 character
     /// set][`RADIX50_DECODE`].
+    ///
+    /// # Examples
+    /// ```
+    /// # use radix50::{Error,pdp10::encode_word};
+    /// let pdp10_encoded = encode_word("ABC").unwrap();
+    /// assert_eq!(pdp10_encoded, 18093);
+    ///
+    /// assert_eq!(encode_word("AA").unwrap(), encode_word("AA ").unwrap());
+    /// assert_eq!(encode_word("A").unwrap(),  encode_word("A  ").unwrap());
+    /// assert_eq!(encode_word("").unwrap(),   encode_word("   ").unwrap());
+    ///
+    /// let result = encode_word("AB-");
+    /// assert_eq!(result, Err(Error::IllegalChar { char: '-', pos: 3 }))
+    /// ```
     pub fn encode_word(s: &str) -> Result<u16, Error> { super::encode_word(&RADIX50_ENCODE, s) }
 
-    /// Decode a [`Vec`] of PDP-10 RADIX-50 encoded words into a string.
+    /// Decode a [`Vec`] of [PDP-10 RADIX-50 encoded][`RADIX50_DECODE`] words into a string.
     ///
     /// The output is a String.
+    ///
+    /// # Examples
+    /// ```
+    /// # use radix50::pdp10::decode;
+    /// assert_eq!(decode(&[48739, 46419, 46411, 1215, 47600]), "THIS IS A TEST ");
+    /// ```
     pub fn decode(words: &[u16]) -> String { super::decode(&RADIX50_DECODE, words) }
 
-    /// Decode a PDP-10 RADIX-50 encoded word into a 3 character string.
+    /// Decode a [PDP-10 RADIX-50 encoded][`RADIX50_DECODE`] word into a 3 character string.
     ///
     /// The output is a String.
+    ///
+    /// # Examples
+    /// ```
+    /// # use radix50::pdp10::decode_word;
+    /// assert_eq!(decode_word(3324), "123");
+    /// ```
     pub fn decode_word(word: u16) -> String { super::decode_word(&RADIX50_DECODE, word) }
 }
 
@@ -144,22 +189,75 @@ pub mod pdp11 {
 
     const RADIX50_ENCODE: [Option<u8>; 128] = super::invert(&RADIX50_DECODE);
 
-    /// Encode a string into a PDP-11 RADIX-50 formatted [`Vec`] of 16-bit words.
+    /// Encode a string into [PDP-11 RADIX-50 format][`RADIX50_DECODE`].
     ///
-    /// It will return an error if any of the input characters are not part of the [valid RADIX-50 character
+    /// The input string will be space padded to a multiple of 3 characters before encoding. This is because
+    /// RADIX-50 encodes 3 charaters into a single 16 bit word.
+    ///
+    /// The output is a [`std::vec::Vec`] of 16-bit words.
+    ///
+    /// It will return an [Error] if any of the input characters are not part of the [valid RADIX-50 character
     /// set][`RADIX50_DECODE`].
+    ///
+    /// # Examples
+    /// ```
+    /// # use radix50::{Error,pdp11::encode};
+    /// let pdp11_encoded = encode("THIS IS A TEST").unwrap();
+    /// assert_eq!(pdp11_encoded, [32329, 30409, 30401, 805, 31200]);
+    ///
+    /// let result = encode("This contains invalid characters");
+    /// assert_eq!(result, Err(Error::IllegalChar { char: 'h', pos: 2 }));
+    ///
+    /// assert_eq!(encode("PADDING12").unwrap(), encode("PADDING12").unwrap());
+    /// assert_eq!(encode("PADDING1").unwrap(),  encode("PADDING1 ").unwrap());
+    /// assert_eq!(encode("PADDING").unwrap(),   encode("PADDING  ").unwrap());
+    /// ```
     pub fn encode(s: &str) -> Result<Vec<u16>, Error> { super::encode(&RADIX50_ENCODE, s) }
 
-    /// Encode a 3 character string into a PDP-11 RADIX-50 formatted 16-bit word.
+    /// Encode 3 characters into a [PDP-11 RADIX-50 formatted][`RADIX50_DECODE`] word.
     ///
-    /// It will return [an error][`Error::IllegalChar`] if any of the input characters are not part of the
-    /// [valid RADIX-50 character set][`RADIX50_DECODE`].
+    /// If the string is shorter than 3 characters then the missing characters are assumed to be spaces.
+    ///
+    /// The output is a single 16-bit word.
+    ///
+    /// It will return an [Error] if any of the input characters are not part of the [valid RADIX-50 character
+    /// set][`RADIX50_DECODE`].
+    ///
+    /// # Examples
+    /// ```
+    /// # use radix50::{Error,pdp11::encode_word};
+    /// let pdp11_encoded = encode_word("ABC").unwrap();
+    /// assert_eq!(pdp11_encoded, 1683);
+    ///
+    /// assert_eq!(encode_word("AA").unwrap(), encode_word("AA ").unwrap());
+    /// assert_eq!(encode_word("A").unwrap(),  encode_word("A  ").unwrap());
+    /// assert_eq!(encode_word("").unwrap(),   encode_word("   ").unwrap());
+    ///
+    /// let result = encode_word("AB-");
+    /// assert_eq!(result, Err(Error::IllegalChar { char: '-', pos: 3 }))
+    /// ```
     pub fn encode_word(s: &str) -> Result<u16, Error> { super::encode_word(&RADIX50_ENCODE, s) }
 
-    /// Decode a [`Vec`] of PDP-11 RADIX-50 encoded words into a string.
+    /// Decode a [`Vec`] of [PDP-11 RADIX-50 encoded][`RADIX50_DECODE`] words into a string.
+    ///
+    /// The output is a String.
+    ///
+    /// # Examples
+    /// ```
+    /// # use radix50::pdp11::decode;
+    /// assert_eq!(decode(&[32329, 30409, 30401, 805, 31200]), "THIS IS A TEST ");
+    /// ```
     pub fn decode(words: &[u16]) -> String { super::decode(&RADIX50_DECODE, words) }
 
-    /// Decode a PDP-11 RADIX-50 encoded word into a 3 character string.
+    /// Decode a [PDP-11 RADIX-50 encoded][`RADIX50_DECODE`] word into a 3 character string.
+    ///
+    /// The output is a String.
+    ///
+    /// # Examples
+    /// ```
+    /// # use radix50::pdp11::decode_word;
+    /// assert_eq!(decode_word(50913), "123");
+    /// ```
     pub fn decode_word(word: u16) -> String { super::decode_word(&RADIX50_DECODE, word) }
 }
 

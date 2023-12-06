@@ -1,3 +1,5 @@
+<!-- cargo-rdme start -->
+
 radix50
 =======
 
@@ -33,6 +35,8 @@ let pdp11_decoded = pdp11::decode(&[32329, 30409, 30401, 805, 31200]);
 assert_eq!(pdp10_decoded, "THIS IS A TEST ");
 assert_eq!(pdp11_decoded, "THIS IS A TEST ");
 ```
+
+<!-- cargo-rdme end -->
 
 CLI
 ---

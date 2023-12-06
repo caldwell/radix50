@@ -3,7 +3,42 @@
 // Copyright © 2023 David Caldwell <david@porkrind.org>
 // License: MIT (see LICENSE.md file)
 
-#![doc = include_str!(env!("CARGO_PKG_README"))]
+// To update README: `cargo rdme` (`cargo install rdme` if not installed)
+//! radix50
+//! =======
+//!
+//! Rust library and cli for encoding and decoding [DEC PDP-11 and PDP-10
+//! RADIX-50 word streams][wikipedia].
+//!
+//! [wikipedia]: https://en.wikipedia.org/wiki/DEC_RADIX_50
+//!
+//! Library Usage
+//! -------------
+//!
+//! Add this to your `Cargo.toml`:
+//!
+//! ```toml
+//! [dependencies]
+//! radix50 = "0.1.0"
+//! ```
+//!
+//! ### Example
+//!
+//! ```rust
+//! use radix50::{pdp10,pdp11};
+//!
+//! let pdp10_encoded = pdp10::encode("THIS IS A TEST").unwrap();
+//! let pdp11_encoded = pdp11::encode("THIS IS A TEST").unwrap();
+//!
+//! assert_eq!(pdp10_encoded, [48739, 46419, 46411, 1215, 47600]);
+//! assert_eq!(pdp11_encoded, [32329, 30409, 30401, 805, 31200]);
+//!
+//! let pdp10_decoded = pdp10::decode(&[48739, 46419, 46411, 1215, 47600]);
+//! let pdp11_decoded = pdp11::decode(&[32329, 30409, 30401, 805, 31200]);
+//!
+//! assert_eq!(pdp10_decoded, "THIS IS A TEST ");
+//! assert_eq!(pdp11_decoded, "THIS IS A TEST ");
+//! ```
 
 use const_for::const_for;
 

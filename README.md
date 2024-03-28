@@ -26,13 +26,13 @@ use radix50::{pdp10,pdp11};
 let pdp10_encoded = pdp10::encode("THIS IS A TEST").unwrap();
 let pdp11_encoded = pdp11::encode("THIS IS A TEST").unwrap();
 
-assert_eq!(pdp10_encoded, [48739, 46419, 46411, 1215, 47600]);
+assert_eq!(pdp10_encoded, [3119342419, 2970305215, 3046400000]);
 assert_eq!(pdp11_encoded, [32329, 30409, 30401, 805, 31200]);
 
-let pdp10_decoded = pdp10::decode(&[48739, 46419, 46411, 1215, 47600]);
+let pdp10_decoded = pdp10::decode(&[3119342419, 2970305215, 3046400000]);
 let pdp11_decoded = pdp11::decode(&[32329, 30409, 30401, 805, 31200]);
 
-assert_eq!(pdp10_decoded, "THIS IS A TEST ");
+assert_eq!(pdp10_decoded, "THIS IS A TEST    ");
 assert_eq!(pdp11_decoded, "THIS IS A TEST ");
 ```
 

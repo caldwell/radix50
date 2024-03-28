@@ -135,6 +135,6 @@ $ radix50 charset
 
 License
 -------
-Copyright © 2023 David Caldwell <david@porkrind.org>
+Copyright © 2023-2024 David Caldwell <david@porkrind.org>
 
 MIT Licensed. See [LICENSE.md](LICENSE.md) for details.

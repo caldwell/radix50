@@ -1,6 +1,6 @@
 // PDP-10/PDP-11/VAX RADIX-50 encoding/decoding functions
 //
-// Copyright © 2023 David Caldwell <david@porkrind.org>
+// Copyright © 2023-2024 David Caldwell <david@porkrind.org>
 // License: MIT (see LICENSE.md file)
 
 // To update README: `cargo rdme` (`cargo install rdme` if not installed)

@@ -25,8 +25,9 @@ Options:
   --pdp10                Use the PDP-10 radix-50 encoding instead
                          of the default PDP-11 encoding.
 
-<word> is a 16 bit word in decimal, hex, or octal (123, 0x7b, 0o173,
-and 0b1111011 are the same)
+<word> is a word in decimal, hex, or octal (123, 0x7b, 0o173,
+and 0b1111011 are the same). The default PDP-11 encoding uses 16-bit
+words. PDP-10 encoding mode uses 32-bit words.
 
 If <string> or <word> is omitted, stdin is read as input.
 When decoding from stdin, stdin is read as a binary stream.

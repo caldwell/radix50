@@ -54,29 +54,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         .unwrap_or_else(|e| e.exit());
 
     if args.cmd_encode {
-        use std::io::Write;
         let to_encode = args.arg_string.map(|s| Ok(s)).unwrap_or_else(|| stdin_to_string())?;
-        let encoded: Vec<u64> = match args.flag_pdp10 { true  => radix50::pdp10::encode(&to_encode)?.into_iter().map(|a| a as u64).collect(),
-                                                        false => radix50::pdp11::encode(&to_encode)?.into_iter().map(|a| a as u64).collect(), };
-        match args.flag_format {
-            Format::Raw => {
-                let mut buffer: Vec<u8> = Vec::with_capacity(encoded.len() * 2);
-                for w in encoded.iter() {
-                    for b in w.to_be_bytes().into_iter().skip(if args.flag_pdp10 { 4 } else { 6 }) { buffer.push(b) }
-                }
-                std::io::stdout().write(&buffer)?;
-            },
-            Format::Hex | Format::Oct | Format::Dec | Format::Bin => {
-                println!("{}", encoded.iter().map(|w| { match args.flag_format {
-                                                            Format::Bin => format!("{:b}", w),
-                                                            Format::Hex => format!("{:x}", w),
-                                                            Format::Oct => format!("{:o}", w),
-                                                            Format::Dec => format!("{}",   w),
-                                                            _ => unreachable!(),
-                                                        }})
-                                             .intersperse(" ".to_string()).collect::<String>())
-            },
-        }
+        match args.flag_pdp10 { true  => output_with_format(&radix50::pdp10::encode(&to_encode)?, args.flag_format)?,
+                                false => output_with_format(&radix50::pdp11::encode(&to_encode)?, args.flag_format)?}
     }
 
 
@@ -103,6 +83,36 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+use std::{fmt::{Binary, LowerHex, Octal, Display}, mem::size_of};
+
+fn output_with_format<T>(encoded: &Vec<T>, format: Format) -> Result<(), Box<dyn Error>>
+where
+    T: Binary+LowerHex+Octal+Display+Copy, u64:From<T>
+{
+    use std::io::Write;
+    match format {
+        Format::Raw => {
+            let mut buffer: Vec<u8> = Vec::with_capacity(encoded.len() * size_of::<T>());
+            for w in encoded.iter() {
+                buffer.extend_from_slice(&(u64::from(*w)).to_be_bytes()[8-size_of::<T>()..]);
+            }
+            std::io::stdout().write(&buffer)?;
+        },
+        Format::Hex | Format::Oct | Format::Dec | Format::Bin => {
+            println!("{}", encoded.iter().map(|w| { match format {
+                                                        Format::Bin => format!("{:b}", w),
+                                                        Format::Hex => format!("{:x}", w),
+                                                        Format::Oct => format!("{:o}", w),
+                                                        Format::Dec => format!("{}",   w),
+                                                        _ => unreachable!(),
+                                                    }})
+                                         .intersperse(" ".to_string()).collect::<String>())
+        },
+    }
+
+    Ok(())
+}
+
 fn get_input<T>(words: &Vec<String>) -> Result<Vec<T>, Box<dyn Error>>
 where
     T: std::convert::TryFrom<u64, Error=std::num::TryFromIntError>,
@@ -110,7 +120,7 @@ where
     if words.len() > 0 {
         parse_words(words)
     } else {
-        Ok(stdin_to_bytes()?.chunks_exact(std::mem::size_of::<T>()).map(|a| {
+        Ok(stdin_to_bytes()?.chunks_exact(size_of::<T>()).map(|a| {
             a.iter().fold(0u64, |w, b| w << 8 | *b as u64)
                 .try_into().unwrap(/*Can't fail in chunk param is correct*/)
         }).collect())

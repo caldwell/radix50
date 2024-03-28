@@ -4,7 +4,6 @@
 // License: MIT (see LICENSE.md file)
 
 #![feature(iter_intersperse)]
-#![feature(array_chunks)]
 
 use std::error::Error;
 
@@ -83,8 +82,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if args.cmd_decode {
         match args.flag_pdp10 {
-            true  => println!("{}", radix50::pdp10::decode(&get_input::<_,4>(&args.arg_word)?)),
-            false => println!("{}", radix50::pdp11::decode(&get_input::<_,2>(&args.arg_word)?)),
+            true  => println!("{}", radix50::pdp10::decode(&get_input(&args.arg_word)?)),
+            false => println!("{}", radix50::pdp11::decode(&get_input(&args.arg_word)?)),
         };
     }
 
@@ -104,17 +103,16 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn get_input<T,const N: usize>(words: &Vec<String>) -> Result<Vec<T>, Box<dyn Error>>
+fn get_input<T>(words: &Vec<String>) -> Result<Vec<T>, Box<dyn Error>>
 where
     T: std::convert::TryFrom<u64, Error=std::num::TryFromIntError>,
 {
     if words.len() > 0 {
         parse_words(words)
     } else {
-        //const N: usize = std::mem::size_of::<u64>()/std::mem::size_of::<T>(); // Should be this except https://github.com/rust-lang/rust/issues/43408
-        Ok(stdin_to_bytes()?.array_chunks::<N>().map(|a| {
+        Ok(stdin_to_bytes()?.chunks_exact(std::mem::size_of::<T>()).map(|a| {
             a.iter().fold(0u64, |w, b| w << 8 | *b as u64)
-                .try_into().unwrap(/*Can't fail in N is correct*/)
+                .try_into().unwrap(/*Can't fail in chunk param is correct*/)
         }).collect())
     }
 }

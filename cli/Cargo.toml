@@ -18,7 +18,7 @@ path = "radix50-cli.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-radix50 = "0.2.0"
+radix50 = "0.2"
 docopt = "1"
 serde = "1"
 

@@ -20,7 +20,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! radix50 = "0.2.0"
+//! radix50 = "0.2"
 //! ```
 //!
 //! ### Example

@@ -9,7 +9,7 @@ where
     predicates::ord::EqPredicate<&'a T>: assert_cmd::assert::IntoOutputPredicate<P>,
     P: predicates::Predicate<[u8]>,
 {
-    let mut cmd = Command::cargo_bin("r50")?;
+    let mut cmd = Command::cargo_bin("radix50")?;
 
     cmd.args(args);
     if let Some(stdin) = stdin {

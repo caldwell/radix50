@@ -12,7 +12,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [[bin]]
-name = "r50"
+name = "radix50"
 path = "radix50-cli.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

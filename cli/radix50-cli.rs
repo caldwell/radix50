@@ -10,7 +10,7 @@ use std::error::Error;
 use docopt::Docopt;
 use serde::Deserialize;
 
-const USAGE: &'static str = "
+const USAGE: &'static str = r#"
 Usage:
   radix50 -h
   radix50 [-h] decode  [--pdp10] [<word>...]
@@ -21,7 +21,7 @@ Options:
   -h --help              Show this screen.
   -f --format=<format>   Output in a specific format [default: dec].
                          <format> can be: hex, oct, dec, bin, raw.
-                         \"raw\" is a raw big endian binary byte stream.
+                         "raw" is a raw big endian binary byte stream.
   --pdp10                Use the PDP-10 radix-50 encoding instead
                          of the default PDP-11 encoding.
 
@@ -32,8 +32,8 @@ words. PDP-10 encoding mode uses 32-bit words.
 If <string> or <word> is omitted, stdin is read as input.
 When decoding from stdin, stdin is read as a big endian binary stream.
 
-The \"charset\" command will dump the radix-50 charset table.
-";
+The "charset" command will dump the radix-50 charset table.
+"#;
 #[derive(Debug, Deserialize)]
 struct Args {
     flag_format:      Format,

@@ -21,3 +21,7 @@ path = "radix50-cli.rs"
 radix50 = "0.1.0"
 docopt = "1"
 serde = "1"
+
+[dev-dependencies]
+assert_cmd = "2.0.14"
+predicates = "3.1.0"

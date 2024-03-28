@@ -57,14 +57,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     if args.cmd_encode {
         use std::io::Write;
         let to_encode = args.arg_string.map(|s| Ok(s)).unwrap_or_else(|| stdin_to_string())?;
-        let encoded = match args.flag_pdp10 { true  => radix50::pdp10::encode(&to_encode)?,
-                                              false => radix50::pdp11::encode(&to_encode)?, };
+        let encoded: Vec<u64> = match args.flag_pdp10 { true  => radix50::pdp10::encode(&to_encode)?.into_iter().map(|a| a as u64).collect(),
+                                                        false => radix50::pdp11::encode(&to_encode)?.into_iter().map(|a| a as u64).collect(), };
         match args.flag_format {
             Format::Raw => {
-                // I like how compact this is, but I dislike the extra vec contructions and flattens:
-                // std::io::stdout().write(&encoded.iter().map(|w| vec![(w >> 8) as u8, (w & 0xff) as u8]).flatten().collect::<Vec<u8>>() );
                 let mut buffer: Vec<u8> = Vec::with_capacity(encoded.len() * 2);
-                for w in encoded.iter() { buffer.push((w >> 8) as u8); buffer.push((w & 0xff) as u8); }
+                for w in encoded.iter() {
+                    for b in w.to_be_bytes().into_iter().skip(if args.flag_pdp10 { 4 } else { 6 }) { buffer.push(b) }
+                }
                 std::io::stdout().write(&buffer)?;
             },
             Format::Hex | Format::Oct | Format::Dec | Format::Bin => {
@@ -82,21 +82,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 
     if args.cmd_decode {
-        let words = if args.arg_word.len() > 0 {
-            args.arg_word.iter().map(|s| Ok(match s {
-                                                s if s.starts_with("0x") => u16::from_str_radix(&s[2..], 16),
-                                                s if s.starts_with("0o") => u16::from_str_radix(&s[2..],  8),
-                                                s if s.starts_with("0b") => u16::from_str_radix(&s[2..],  2),
-                                                s                        => u16::from_str_radix(s,       10),
-                                            }.map_err(|_| format!("Couldn't parse as integer: {}", s))?))
-                .collect::<Result<Vec<u16>, String>>()?
-        } else {
-            stdin_to_bytes()?.array_chunks().map(|a: &[u8;2]| (a[0] as u16) << 8 | a[1] as u16).collect()
-        };
-
         match args.flag_pdp10 {
-            true  => println!("{}", radix50::pdp10::decode(&words)),
-            false => println!("{}", radix50::pdp11::decode(&words)),
+            true  => println!("{}", radix50::pdp10::decode(&get_input::<_,4>(&args.arg_word)?)),
+            false => println!("{}", radix50::pdp11::decode(&get_input::<_,2>(&args.arg_word)?)),
         };
     }
 
@@ -114,6 +102,35 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 
     Ok(())
+}
+
+fn get_input<T,const N: usize>(words: &Vec<String>) -> Result<Vec<T>, Box<dyn Error>>
+where
+    T: std::convert::TryFrom<u64, Error=std::num::TryFromIntError>,
+{
+    if words.len() > 0 {
+        parse_words(words)
+    } else {
+        //const N: usize = std::mem::size_of::<u64>()/std::mem::size_of::<T>(); // Should be this except https://github.com/rust-lang/rust/issues/43408
+        Ok(stdin_to_bytes()?.array_chunks::<N>().map(|a| {
+            a.iter().fold(0u64, |w, b| w << 8 | *b as u64)
+                .try_into().unwrap(/*Can't fail in N is correct*/)
+        }).collect())
+    }
+}
+
+fn parse_words<T>(words: &Vec<String>) -> Result<Vec<T>, Box<dyn Error>>
+where
+    T: std::convert::TryFrom<u64, Error=std::num::TryFromIntError>,
+{
+    words.iter().map(|s| Ok(match s {
+        s if s.starts_with("0x") => u64::from_str_radix(&s[2..], 16),
+        s if s.starts_with("0o") => u64::from_str_radix(&s[2..],  8),
+        s if s.starts_with("0b") => u64::from_str_radix(&s[2..],  2),
+        s                        => u64::from_str_radix(s,       10),
+    }.map_err(|_| format!("Couldn't parse as integer: {}", s))?
+        .try_into().map_err(|_| format!("Couldn't convert {} to {}", s, std::any::type_name::<T>()))?))
+        .collect()
 }
 
 fn stdin_to_bytes() -> Result<Vec<u8>, Box<dyn Error>> {

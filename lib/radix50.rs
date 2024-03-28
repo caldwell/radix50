@@ -184,7 +184,7 @@ pub mod pdp10 {
     /// ```
     pub fn encode_word(s: &str) -> Result<u32, Error> { Codec::encode_word(s) }
 
-    /// Decode a [`Vec`] of [PDP-10 RADIX-50 encoded][`RADIX50_DECODE`] 32 bit words into a string.
+    /// Decode a [`slice`] of [PDP-10 RADIX-50 encoded][`RADIX50_DECODE`] 32 bit words into a string.
     ///
     /// The output is a String.
     ///
@@ -330,7 +330,7 @@ pub mod pdp11 {
     /// ```
     pub fn encode_word(s: &str) -> Result<u16, Error> { Codec::encode_word(s) }
 
-    /// Decode a [`Vec`] of [PDP-11 RADIX-50 encoded][`RADIX50_DECODE`] words into a string.
+    /// Decode a [`slice`] of [PDP-11 RADIX-50 encoded][`RADIX50_DECODE`] words into a string.
     ///
     /// The output is a String.
     ///

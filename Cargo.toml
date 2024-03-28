@@ -11,9 +11,9 @@ members = [
 radix50 = { path = "lib" }
 
 [workspace.dependencies]
-radix50 = "0.1.1"
+radix50 = "0.2.0"
 [workspace.package]
-version = "0.1.1"
+version = "0.2.0"
 authors = ["David Caldwell <david@porkrind.org>"]
 homepage = "https://github.com/caldwell/radix50"
 repository = "https://github.com/caldwell/radix50.git"
